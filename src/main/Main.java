@@ -11,29 +11,34 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-public class Main extends Canvas implements Runnable{
+import entities.Player;
+import input.KeyInput;
+
+public class Main extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	public static final int WIDTH = 1080;
 	public static final int HEIGHT = 720;
-	
+
 	public KeyInput keyInput;
-	
+
 	public int tickCount = 0;
 	private boolean running = false;
-	
+
 	private BufferedImage spriteSheet = null;
 	private BufferedImage tank;
 	private BufferedImage tile = null;
-	
+
 	private JFrame frame;
 	
-	//create a window
-	public Main(){
+	private Player player;
+
+	// create a window
+	public Main() {
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setMaximumSize(new Dimension(WIDTH, HEIGHT));
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		
+
 		frame = new JFrame("NeonTowerDefense credits: Bram en jason");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
@@ -42,114 +47,118 @@ public class Main extends Canvas implements Runnable{
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
+
 		keyInput = new KeyInput();
 	}
-	
-	public void init(){
+
+	public void init() {
 		frame.addKeyListener(keyInput);
+		addKeyListener(keyInput);
 		BufferedImageLoader loader = new BufferedImageLoader();
-		
+
 		try {
 			spriteSheet = loader.loadImage("/spriteSheet.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("couldn't load the file");
 		}
-		
+
 		SpriteSheet ss = new SpriteSheet(spriteSheet);
 		tank = ss.grabImage(2, 1, 32, 32);
 		tile = ss.grabImage(1, 1, 32, 32);
+		player = new Player(tank,0,0);
 	}
-	
-	//start thread
-	public synchronized void start(){
+
+	// start thread
+	public synchronized void start() {
 		running = true;
 		new Thread(this).start();
 	}
-	
-	//stop thread
-	public synchronized void stop(){
+
+	// stop thread
+	public synchronized void stop() {
 		running = false;
 	}
-	
-	//run method
+
+	// run method
 	public void run() {
 		init();
 		long lastTime = System.nanoTime();
-		double nsPerTick = 1000000000D/60D;
-		
+		double nsPerTick = 1000000000D / 60D;
+
 		int ticks = 0;
 		int frames = 0;
-		
+
 		long lastTimer = System.currentTimeMillis();
 		double delta = 0;
-		
-		//main game loop
-		while(running){
+
+		// main game loop
+		while (running) {
 			long now = System.nanoTime();
-			delta += (now - lastTime)/nsPerTick;
-			lastTime=now;
+			delta += (now - lastTime) / nsPerTick;
+			lastTime = now;
 			boolean shouldRender = true;
-			
-			while(delta >=1){
-				ticks ++;
+
+			while (delta >= 1) {
+				ticks++;
 				tick();
 				delta--;
 			}
-			
-			try{
+
+			try {
 				Thread.sleep(2);
-			}catch(InterruptedException e){
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
-			if(shouldRender){
+
+			if (shouldRender) {
 				frames++;
 				render();
 			}
-			
-			if(System.currentTimeMillis() - lastTimer >= 1000){
+
+			if (System.currentTimeMillis() - lastTimer >= 1000) {
 				lastTimer += 1000;
 				System.out.println(ticks + " ticks " + frames + " frames ");
 				frames = 0;
 				ticks = 0;
 			}
-			
+
 		}
 	}
-	
-	//tick method
-	public void tick(){
+
+	// tick method
+	public void tick() {
 		tickCount++;
+		keyInput.tick();
+		player.update();
 	}
-	
-	//render method
-	public void render(){
-		//BufferedStrategy
-		BufferStrategy bs =  getBufferStrategy();
-		if(bs == null){
+
+	// render method
+	public void render() {
+		// BufferedStrategy
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
 			createBufferStrategy(3);
 			return;
 		}
-		
+
 		Graphics g = bs.getDrawGraphics();
-		
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
+
 		g.drawImage(tank, 100, 100, null);
 		g.drawImage(tile, 200, 200, null);
-		
-		
+		g.drawImage(player.getImage(),player.getRenderX(),player.getRenderY(),null);
+
 		g.dispose();
 		bs.show();
-		
+
 	}
-	
-	//main method
-	public static void main(String[] args){
+
+	// main method
+	public static void main(String[] args) {
 		new Main().start();
 	}
-	
+
 }

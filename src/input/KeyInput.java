@@ -1,4 +1,4 @@
-package main;
+package input;
 
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 public class KeyInput implements KeyListener{
 
 	public boolean[] keys;
-	public boolean up, down, left, right;
+	public static boolean up, down, left, right;
 	
 	
 	public KeyInput(){
@@ -22,7 +22,7 @@ public class KeyInput implements KeyListener{
 
 	public void keyPressed(KeyEvent e) {
 		keys[e.getKeyCode()] = true;
-		System.out.println("pressed");
+		System.out.println("pressed: " + e.getKeyCode());
 	}
 
 	public void keyReleased(KeyEvent e) {

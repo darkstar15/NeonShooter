@@ -28,8 +28,6 @@ public class Main extends Canvas implements Runnable{
 	
 	//create a window
 	public Main(){
-		//new Window(WIDTH, HEIGHT, "hahahhaha", this);
-		
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setMaximumSize(new Dimension(WIDTH, HEIGHT));
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -43,7 +41,6 @@ public class Main extends Canvas implements Runnable{
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
 	}
 	
 	public void init(){

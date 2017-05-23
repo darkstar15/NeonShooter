@@ -22,6 +22,7 @@ public class Main extends Canvas implements Runnable{
 	
 	private BufferedImage spriteSheet = null;
 	private BufferedImage tank;
+	private BufferedImage tile = null;
 	
 	private JFrame frame;
 	
@@ -54,6 +55,7 @@ public class Main extends Canvas implements Runnable{
 		
 		SpriteSheet ss = new SpriteSheet(spriteSheet);
 		tank = ss.grabImage(2, 1, 32, 32);
+		tile = ss.grabImage(1, 1, 32, 32);
 	}
 	
 	//start thread
@@ -135,6 +137,7 @@ public class Main extends Canvas implements Runnable{
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		g.drawImage(tank, 100, 100, null);
+		g.drawImage(tile, 200, 200, null);
 		
 		g.dispose();
 		bs.show();

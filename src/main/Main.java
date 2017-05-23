@@ -17,6 +17,8 @@ public class Main extends Canvas implements Runnable{
 	public static final int WIDTH = 1080;
 	public static final int HEIGHT = 720;
 	
+	public KeyInput keyInput;
+	
 	public int tickCount = 0;
 	private boolean running = false;
 	
@@ -28,14 +30,12 @@ public class Main extends Canvas implements Runnable{
 	
 	//create a window
 	public Main(){
-		//new Window(WIDTH, HEIGHT, "hahahhaha", this);
 		
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setMaximumSize(new Dimension(WIDTH, HEIGHT));
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
 		frame = new JFrame("NeonTowerDefense credits: Bram en jason");
-		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.add(this, BorderLayout.CENTER);
@@ -44,9 +44,11 @@ public class Main extends Canvas implements Runnable{
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		
+		keyInput = new KeyInput();
 	}
 	
 	public void init(){
+		frame.addKeyListener(keyInput);
 		BufferedImageLoader loader = new BufferedImageLoader();
 		
 		try {
@@ -115,8 +117,6 @@ public class Main extends Canvas implements Runnable{
 				ticks = 0;
 			}
 			
-			
-			
 		}
 	}
 	
@@ -141,6 +141,7 @@ public class Main extends Canvas implements Runnable{
 		
 		g.drawImage(tank, 100, 100, null);
 		g.drawImage(tile, 200, 200, null);
+		
 		
 		g.dispose();
 		bs.show();
